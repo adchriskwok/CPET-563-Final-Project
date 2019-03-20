@@ -1,0 +1,17 @@
+//This file acts as the basic logic for the manual flight of the drone
+
+main:
+
+  while(1){
+    
+    int auto_mode = controller_autonomous_switch()
+    
+    //***********************Manual mode*********************************
+    if(auto_mode == 1){ 
+      int pitch_roll = controller_pitch_roll_joystick()
+      int yaw = controller_pitch_roll_joystick()
+      ManualMotor(pitch_roll, yaw)
+    }
+    
+    //************************Auto mode**********************************
+    
