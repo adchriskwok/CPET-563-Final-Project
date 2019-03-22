@@ -1,17 +1,107 @@
 //This file acts as the basic logic for the manual flight of the drone
 
-main:
+void main(){
 
   while(1){
     
-    int auto_mode = controller_autonomous_switch()
+    int manual_or_auto = controller_auto_switch()
     
     //***********************Manual mode*********************************
-    if(auto_mode == 1){ 
+    if(manual_or_auto == 1){ 
       int pitch_roll = controller_pitch_roll_joystick()
-      int yaw = controller_pitch_roll_joystick()
-      ManualMotor(pitch_roll, yaw)
+      int throttle_yaw = controller_throttle_yaw_joystick()
+      updateMotors(pitch_roll, throttle_yaw)
     }
     
     //************************Auto mode**********************************
-    
+    if(manual_or_auto == 0){
+      int auto_mode = controller_auto_mode_switch()
+      
+      //***************************Nav mode******************************
+      if (auto_mode == 0){
+        int *instructions = get_lut_instructs()
+        for (int i = 0, *(instructions + i) != (end of dataset), i++){
+          int current_instruction = *instructions+i
+          //Insert instructions to simulink - add function callouts to get m1, m2, m3, m4 when simulink functions are posted
+          updatePWM(m1, m2, m3, m4)
+        }
+      }
+      
+      //**********************Basic Tracking mode************************
+      if (auto_mode == 1){
+        int *x
+        int *y
+        detect_ball(x, y) //Potentially add z)
+        int pitch_roll
+        int throttle_yaw
+        converter(pitch_roll, throttle_yaw, x, y)
+        updateMotors(pitch_roll, throttle_yaw)
+      }
+      
+      //********************Advanced Tracking Mode***********************
+      if (auto_mode == 2){
+        int *x
+        int *y
+        detect_face(x, y) //Potentially add z)
+        int pitch_roll
+        int throttle_yaw
+        converter(pitch_roll, throttle_yaw, x, y)
+        updateMotors(pitch_roll, throttle_yaw)
+      }
+    }
+  }
+}
+
+int controller_auto_switch(){
+  //code to get autonomous switch value
+  //Update when we get receiver function calls
+  return switch_val
+}
+
+int controller_auto_mode_switch(){
+  //code to get autonomous mode switch value
+  //Update when we get receiver function calls
+  return switch_val
+}
+
+int controller_pitch_roll_joystick(){
+  //code to get joystick value
+  //Update when we get receiver function calls
+}
+
+int controller_throttle_yaw_joystick(){
+  //code to get joystick value
+  //Update when we get receiver function calls
+}
+
+void updateMotors(int pitch_roll, int throttle_yaw)
+{
+  //Decode pitch_roll into pitch and roll
+  //Decode throttle_yaw into throttle and yaw
+  //Activate simulink functions to convert into PWM duty cycles m1, m2, m3, and m4
+  updatePWM(m1, m2, m3, m4)
+}
+
+void updatePWM(int m1, int m2, int m3, int m4){
+  //changes memory locations that VHDL PWM modules interact with
+}
+
+int * get_lut_instructs(){
+  //Gets instructions for Nav mode movement from lut
+}
+
+void detect_ball(int * x, int * y){
+  //detect tennis ball using openCV code - include camera function calls - test using loops and image files  
+  *x = openCV_x
+  *y = openCV_y
+}
+
+void detect_face(int * x, int * y){
+  //detect face using openCV code - include camera function calls - test using loops and image files  
+  *x = openCV_x
+  *y = openCV_y
+}
+
+void converter(int* pitch_roll, int* throttle_yaw, int* x, int* y){
+  //Logic to convert x and y into throttle_yaw and pitch_roll values
+}
