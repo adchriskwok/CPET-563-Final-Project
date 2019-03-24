@@ -4,64 +4,86 @@ void main(){
 
   while(1){
     
-    int manual_or_auto = controller_auto_switch()
+    int enable = controller_en_sw()
     
-    //***********************Manual mode*********************************
-    if(manual_or_auto == 1){ 
-      int pitch_roll = controller_pitch_roll_joystick()
-      int throttle_yaw = controller_throttle_yaw_joystick()
-      updateMotors(pitch_roll, throttle_yaw)
+    //***********************Disable***************************
+    if(enable == 0){ 
+      //Turn off motors
+      updatePWM(m1, m2, m3, m4)
     }
     
-    //************************Auto mode**********************************
-    if(manual_or_auto == 0){
-      int auto_mode = controller_auto_mode_switch()
+    //***********************Low duty***************************
+    if(enable == 1){ 
+      //Low duty
+      updatePWM(m1, m2, m3, m4)
+    }
+    
+    //***********************Enable***************************
+    if(enable == 2){ 
+      int manual_or_auto = controller_auto_sw()
+    
+    //***********************Manual mode*********************************
+      if(manual_or_auto == 1){ 
+        int pitch_roll = controller_pitch_roll_joystick()
+        int throttle_yaw = controller_throttle_yaw_joystick()
+        updateMotors(pitch_roll, throttle_yaw)
+      }
       
-      //***************************Nav mode******************************
-      if (auto_mode == 0){
-        int *instructions = get_lut_instructs()
-        for (int i = 0, *(instructions + i) != (end of dataset), i++){
-          int current_instruction = *instructions+i
-          //Insert instructions to simulink - add function callouts to get m1, m2, m3, m4 when simulink functions are posted
-          updatePWM(m1, m2, m3, m4)
+      //************************Auto mode**********************************
+      if(manual_or_auto == 0){
+        int auto_mode = controller_auto_mode_sw()
+        
+        //***************************Nav mode******************************
+        if (auto_mode == 0){
+          int *instructions = get_lut_instructs()
+          for (int i = 0, *(instructions + i) != (end of dataset), i++){
+            int current_instruction = *instructions+i
+            //Insert instructions to simulink - add function callouts to get m1, m2, m3, m4 when simulink functions are posted
+            updatePWM(m1, m2, m3, m4)
+          }
         }
-      }
-      
-      //**********************Basic Tracking mode************************
-      if (auto_mode == 1){
-        int *x
-        int *y
-        detect_ball(x, y) //Potentially add z)
-        int pitch_roll
-        int throttle_yaw
-        converter(pitch_roll, throttle_yaw, x, y)
-        updateMotors(pitch_roll, throttle_yaw)
-      }
-      
-      //********************Advanced Tracking Mode***********************
-      if (auto_mode == 2){
-        int *x
-        int *y
-        detect_face(x, y) //Potentially add z)
-        int pitch_roll
-        int throttle_yaw
-        converter(pitch_roll, throttle_yaw, x, y)
-        updateMotors(pitch_roll, throttle_yaw)
-      }
+        
+        //**********************Basic Tracking mode************************
+        if (auto_mode == 1){
+          int *x
+          int *y
+          detect_ball(x, y) //Potentially add z)
+          int pitch_roll
+          int throttle_yaw
+          converter(pitch_roll, throttle_yaw, x, y)
+          updateMotors(pitch_roll, throttle_yaw)
+        }
+        
+        //********************Advanced Tracking Mode***********************
+        if (auto_mode == 2){
+          int *x
+          int *y
+          detect_face(x, y) //Potentially add z)
+          int pitch_roll
+          int throttle_yaw
+          converter(pitch_roll, throttle_yaw, x, y)
+          updateMotors(pitch_roll, throttle_yaw)
+        }
     }
   }
 }
 
-int controller_auto_switch(){
+int controller_en_sw(){
   //code to get autonomous switch value
   //Update when we get receiver function calls
-  return switch_val
+  return sw_val
 }
 
-int controller_auto_mode_switch(){
+int controller_auto_sw(){
+  //code to get autonomous switch value
+  //Update when we get receiver function calls
+  return sw_val
+}
+
+int controller_auto_mode_sw(){
   //code to get autonomous mode switch value
   //Update when we get receiver function calls
-  return switch_val
+  return sw_val
 }
 
 int controller_pitch_roll_joystick(){
