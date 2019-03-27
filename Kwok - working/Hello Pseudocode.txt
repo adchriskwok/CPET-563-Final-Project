@@ -38,8 +38,8 @@ void main(){
           int *instructions = get_lut_instructs()
           for (int i = 0, *(instructions + i) != (end of dataset), i++){
             int current_instruction = *instructions+i
-            //Insert instructions to simulink - add function callouts to get m1, m2, m3, m4 when simulink functions are posted
-            updatePWM(m1, m2, m3, m4)
+            
+            updatePWM()
           }
         }
         
@@ -48,10 +48,8 @@ void main(){
           int *x
           int *y
           detect_ball(x, y) //Potentially add z)
-          int pitch_roll
-          int throttle_yaw
-          converter(pitch_roll, throttle_yaw, x, y)
-          updateMotors(pitch_roll, throttle_yaw)
+          //Store x and y into location to be accessed by simulink control loops
+          updateMotors()
         }
         
         //********************Advanced Tracking Mode***********************
@@ -59,10 +57,8 @@ void main(){
           int *x
           int *y
           detect_face(x, y) //Potentially add z)
-          int pitch_roll
-          int throttle_yaw
-          converter(pitch_roll, throttle_yaw, x, y)
-          updateMotors(pitch_roll, throttle_yaw)
+          //Store x and y into location to be accessed by simulink control loops
+          updateMotors()
         }
     }
   }
@@ -98,10 +94,7 @@ int controller_throttle_yaw_joystick(){
 
 void updateMotors(int pitch_roll, int throttle_yaw)
 {
-  //Decode pitch_roll into pitch and roll
-  //Decode throttle_yaw into throttle and yaw
-  //Activate simulink functions to convert into PWM duty cycles m1, m2, m3, and m4
-  updatePWM(m1, m2, m3, m4)
+  //Push simulink pwm values to motor registers
 }
 
 void updatePWM(int m1, int m2, int m3, int m4){
@@ -113,17 +106,25 @@ int * get_lut_instructs(){
 }
 
 void detect_ball(int * x, int * y){
-  //detect tennis ball using openCV code - include camera function calls - test using loops and image files  
-  *x = openCV_x
-  *y = openCV_y
+  //detect tennis ball using openCV code - test using loops and image files  
+  // Import camera and pull image
+  import droneCamera as dc
+  cam = dc.cam()
+  frame = cam.getFrame(1)
+  int openCV_x = //Use OpenCV to calculate x
+  int openCV_y = //Use OpenCV to calculate y
+  *x = OpenCV_x
+  *y = OpenCV_y
 }
 
 void detect_face(int * x, int * y){
-  //detect face using openCV code - include camera function calls - test using loops and image files  
-  *x = openCV_x
-  *y = openCV_y
-}
-
-void converter(int* pitch_roll, int* throttle_yaw, int* x, int* y){
-  //Logic to convert x and y into throttle_yaw and pitch_roll values
+  //detect face using openCV code - test using loops and image files  
+  // Import camera and pull image
+  import droneCamera as dc
+  cam = dc.cam()
+  frame = cam.getFrame(1)
+  int openCV_x = //Use OpenCV to calculate x
+  int openCV_y = //Use OpenCV to calculate y
+  *x = OpenCV_x
+  *y = OpenCV_y
 }
