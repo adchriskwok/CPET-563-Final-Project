@@ -26,7 +26,7 @@ void main(){
       if(manual_or_auto == 1){ 
         int pitch_roll = controller_pitch_roll_joystick()
         int throttle_yaw = controller_throttle_yaw_joystick()
-        updateMotors(pitch_roll, throttle_yaw)
+        //Simulink
       }
       
       //************************Auto mode**********************************
@@ -38,8 +38,7 @@ void main(){
           int *instructions = get_lut_instructs()
           for (int i = 0, *(instructions + i) != (end of dataset), i++){
             int current_instruction = *instructions+i
-            
-            updatePWM()
+            //Store instructions for lut referenced by simulink
           }
         }
         
@@ -49,7 +48,6 @@ void main(){
           int *y
           detect_ball(x, y) //Potentially add z)
           //Store x and y into location to be accessed by simulink control loops
-          updateMotors()
         }
         
         //********************Advanced Tracking Mode***********************
@@ -58,7 +56,6 @@ void main(){
           int *y
           detect_face(x, y) //Potentially add z)
           //Store x and y into location to be accessed by simulink control loops
-          updateMotors()
         }
     }
   }
@@ -95,10 +92,6 @@ int controller_throttle_yaw_joystick(){
 void updateMotors(int pitch_roll, int throttle_yaw)
 {
   //Push simulink pwm values to motor registers
-}
-
-void updatePWM(int m1, int m2, int m3, int m4){
-  //changes memory locations that VHDL PWM modules interact with
 }
 
 int * get_lut_instructs(){
